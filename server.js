@@ -9,7 +9,7 @@ const {BlogPost} = require('./models');
 const app = express();
 
 app.use(morgan('common'));
-app.use(bodyParser.json());
+app.use(bodyParser.json( ));
 
 mongoose.Promise = global.Promise;
 
@@ -19,7 +19,7 @@ app.get('/posts', (req, res) => {
     .find()
     .exec()
     .then(posts => {
-      res.json(posts.map(post => post.apiRepr()));
+      res.json(posts.map(post => post.apiRepr( )));
     })
     .catch(err => {
       console.error(err);
@@ -31,7 +31,7 @@ app.get('/posts/:id', (req, res) => {
   BlogPost
     .findById(req.params.id)
     .exec()
-    .then(post => res.json(post.apiRepr()))
+    .then(post => res.json(post.apiRepr( )))
     .catch(err => {
       console.error(err);
       res.status(500).json({error: 'something went horribly awry'});
@@ -55,14 +55,13 @@ app.post('/posts', (req, res) => {
       content: req.body.content,
       author: req.body.author
     })
-    .then(blogPost => res.status(201).json(blogPost.apiRepr()))
+    .then(blogPost => res.status(201).json(blogPost.apiRepr( )))
     .catch(err => {
         console.error(err);
         res.status(500).json({error: 'Something went wrong'});
     });
 
 });
-
 
 app.delete('/posts/:id', (req, res) => {
   BlogPost
@@ -95,8 +94,8 @@ app.put('/posts/:id', (req, res) => {
 
   BlogPost
     .findByIdAndUpdate(req.params.id, {$set: updated}, {new: true})
-    .exec()
-    .then(updatedPost => res.status(201).json(updatedPost.apiRepr()))
+    .exec( )
+    .then(updatedPost => res.status(201).json(updatedPost.apiRepr( )))
     .catch(err => res.status(500).json({message: 'Something went wrong'}));
 });
 
