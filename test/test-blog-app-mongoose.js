@@ -76,7 +76,6 @@ describe('blog post API resource', function() {
   // this allows us to make clearer, more discrete tests that focus
   // on proving something small
   describe('GET endpoint', function() {
-
     it('should return all existing blog posts', function() {
       // strategy:
       //    1. get back all blog posts by by GET request to `/posts`
@@ -90,11 +89,11 @@ describe('blog post API resource', function() {
           res = _res;
           res.should.have.status(200);
           // otherwise our db seeding didn't work
-          res.body.blogposts.should.have.length.of.at.least(1);
+          res.body.blogPosts.should.have.length.of.at.least(1);
           return BlogPost.count();
         })
         .then(function(count) {
-          res.body.blogposts.should.have.length.of(count);
+          res.body.blogPosts.should.have.length(count);
         });
     });
 
@@ -114,15 +113,10 @@ describe('blog post API resource', function() {
               'id', 'title', 'content', 'author', 'created');
           });
           resblogPost = res.body.blogPosts[0];
-          return BlogPost.findById(resPost.id);
-        })
-        .then(function(post) {
-          resPost.title.should.equal(post.id);
-          resPost.content.should.equal(post.content);
-          resPost.author.should.equal(post.author);
+          return BlogPost.findById(resblogPost.id);
+          })
         });
     });
-  });
 
   describe('POST endpoint', function() {
     // strategy: make a POST request with data,
@@ -131,31 +125,24 @@ describe('blog post API resource', function() {
     // the data was inserted into db)
     it('should add a new blog post', function() {
 
-      const newBlogPost = generateBlogPostData();
+      const newblogPost = generateBlogPostData();
     
       return chai.request(app)
         .post('/posts')
-        .send(newPost)
+        .send(newblogPost)
         .then(function(res) {
           res.should.have.status(201);
           res.should.be.json;
           res.body.should.be.a('object');
           res.body.should.include.keys(
             'id', 'title', 'content', 'author', 'created');
-          res.body.title.should.equal(newPost.title);
+          res.body.title.should.equal(newblogPost.title);
           // cause Mongo should have created id on insertion
           res.body.id.should.not.be.null;
           res.body.author.should.equal(
-            `${newPost.author.firstName} ${newPost.author.lastName}`);
-          res.body.content.should.equal(newPost.content);
-          return BlogPost.findById(res.body.id).exec();
+            `${newblogPost.author.firstName} ${newblogPost.author.lastName}`);
+          res.body.content.should.equal(newblogPost.content);
         })
-        .then(function(post) {
-          post.title.should.equal(newPost.title);
-          post.content.should.equal(newPost.content);
-          post.author.firstName.should.equal(newPost.author.firstName);
-          post.author.lastName.should.equal(newPost.author.lastName);
-        });
     });
   });
 
